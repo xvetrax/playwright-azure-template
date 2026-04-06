@@ -1,0 +1,107 @@
+{
+  "name": "playwright-ui-api-framework",
+  "version": "1.0.0",
+  "description": "Unified Playwright and TypeScript automation framework for UI, API, and hybrid end-to-end validation",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rajeshyemul/playwright-ui-api-framework.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rajeshyemul/playwright-ui-api-framework/issues"
+  },
+  "homepage": "https://github.com/rajeshyemul/playwright-ui-api-framework#readme",
+  "files": [
+    "src",
+    "tests",
+    "docs",
+    "README.md",
+    "playwright.config.ts",
+    "tsconfig.json",
+    "eslint.config.mjs",
+    ".env.example"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test tests/ui",
+    "test:api": "npx playwright test tests/api",
+    "test:app": "npx playwright test tests/app",
+    "test:smoke": "npx playwright test --grep @smoke",
+    "test:integration": "npx playwright test --grep @integration",
+    "test:contract": "npx playwright test --grep @contract",
+    "test:headed": "npx playwright test --headed",
+    "test:debug": "npx playwright test --debug",
+    "test:ordered": "ORDER_MODE=priority ts-node src/runner/TestOrderManager.ts",
+    "test:ordered:basic": "ORDER_MODE=basic ts-node src/runner/TestOrderManager.ts",
+    "test:ordered:priority": "ORDER_MODE=priority ts-node src/runner/TestOrderManager.ts",
+    "test:ordered:dry-run": "ORDER_DRY_RUN=true ORDER_MODE=priority ts-node src/runner/TestOrderManager.ts",
+    "report:html": "npx ts-node src/helper/reporting/GenerateReports.ts html",
+    "report:priority": "npx ts-node src/helper/reporting/GenerateReports.ts priority",
+    "report:allure": "npx ts-node src/helper/reporting/GenerateReports.ts allure --open",
+    "format": "prettier --write .",
+    "clean": "rm -rf reports test-results playwright-report allure-results",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "validate": "npm run type-check && npm run lint",
+    "pretest": "npm run type-check",
+    "codegen": "npx playwright codegen"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "ui-automation",
+    "api-automation",
+    "hybrid-testing",
+    "allure",
+    "page-object-model",
+    "service-layer"
+  ],
+  "author": "Rajesh Yemul",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@playwright/test": "^1.58.2",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^25.2.3",
+    "@types/randomstring": "^1.3.0",
+    "@types/string-format": "^2.0.3",
+    "@types/xml2js": "^0.4.14",
+    "@typescript-eslint/eslint-plugin": "8.53.1",
+    "@typescript-eslint/parser": "8.53.1",
+    "allure-commandline": "^2.38.0",
+    "allure-js-commons": "^3.4.5",
+    "allure-playwright": "^3.4.5",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.3.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "husky": "9.1.7",
+    "lint-staged": "16.2.7",
+    "pdf-parse": "^2.4.5",
+    "prettier": "3.8.1",
+    "randomstring": "^1.3.1",
+    "string-format": "^2.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.1",
+    "winston": "^3.19.0",
+    "xlsx": "^0.18.5",
+    "xml2js": "^0.6.2"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "zod": "^4.3.6"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs,cjs}": [
+      "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}
