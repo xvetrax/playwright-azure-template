@@ -29,7 +29,7 @@ export class HomePage extends BasePage {
 
   private async focusRoomCatalog(): Promise<void> {
     const roomsHeading = this.locatorByText(/^Our Rooms$/);
-    await this.uiElementActions.scrollIntoView(roomsHeading);
+    await this.ui.element.scrollIntoView(roomsHeading);
     await this.expectUtils.expectElementToBeVisible(
       roomsHeading,
       'home page rooms heading',
@@ -59,7 +59,7 @@ export class HomePage extends BasePage {
   async verifyRoomCardsArePopulated(): Promise<void> {
     await StepRunner.run('Home Page - verify room cards are populated', async () => {
       await this.focusRoomCatalog();
-      const roomCount = await this.uiElementActions.count(this.roomTitles);
+      const roomCount = await this.ui.element.count(this.roomTitles);
 
       await this.assertUtils.assertGreaterThanOrEqual(
         roomCount,
@@ -69,7 +69,7 @@ export class HomePage extends BasePage {
 
       for (let index = 0; index < Math.min(roomCount, 3); index++) {
         const card = this.getRoomCardByIndex(index);
-        const title = await this.uiElementActions.text(this.roomTitles.nth(index));
+        const title = await this.ui.element.text(this.roomTitles.nth(index));
 
         await this.assertUtils.assertGreaterThan(
           title.length,
@@ -89,7 +89,7 @@ export class HomePage extends BasePage {
           `Room card ${index + 1} should display nightly price information`
         );
         await this.assertUtils.assertGreaterThan(
-          await this.uiElementActions.count(
+          await this.ui.element.count(
             card.locator(BookingHomePageLocators.ROOM_CARD_FEATURE)
           ),
           0,

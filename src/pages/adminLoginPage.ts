@@ -42,12 +42,12 @@ export class AdminLoginPage extends BasePage {
 
   async login(username: string, password: string): Promise<void> {
     await StepRunner.run('Admin Login - submit credentials', async () => {
-      await this.editBoxActions.fill(AdminLoginPageLocators.USERNAME, username);
-      await this.editBoxActions.fill(AdminLoginPageLocators.PASSWORD, password);
+      await this.ui.editBox.fill(AdminLoginPageLocators.USERNAME, username);
+      await this.ui.editBox.fill(AdminLoginPageLocators.PASSWORD, password);
 
       await Promise.all([
         this.pageActions.waitForNavigation(/\/admin\/rooms/, 30_000),
-        this.uiElementActions.click(this.locator(AdminLoginPageLocators.LOGIN_BUTTON)),
+        this.ui.element.click(this.locator(AdminLoginPageLocators.LOGIN_BUTTON)),
       ]);
     });
   }

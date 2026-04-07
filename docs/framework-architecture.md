@@ -109,8 +109,9 @@ Selectors, UI actions, and UI assertions belong in page objects and helper layer
 
 In this framework, that also means page objects should call helper utilities such as:
 
-- `this.uiActions`
-- `this.uiElementActions`
+- `this.ui.element`
+- `this.ui.editBox`
+- `this.ui.dropdown`
 - `this.waitUtils`
 - `this.expectUtils`
 - `this.assertUtils`
@@ -622,6 +623,8 @@ The UI layer sits on top of helper abstractions that own low-level mechanics.
 - [src/helper/actions/UIActions.ts](/Users/rajesh.yemul/Practice%20Project/pw-ui-api-framework/src/helper/actions/UIActions.ts)
 - [src/helper/actions/UIElementActions.ts](/Users/rajesh.yemul/Practice%20Project/pw-ui-api-framework/src/helper/actions/UIElementActions.ts)
 - [src/helper/actions/EditBoxActions.ts](/Users/rajesh.yemul/Practice%20Project/pw-ui-api-framework/src/helper/actions/EditBoxActions.ts)
+- [src/helper/actions/DropDownActions.ts](/Users/rajesh.yemul/Practice%20Project/pw-ui-api-framework/src/helper/actions/DropDownActions.ts)
+- [src/helper/actions/CheckboxActions.ts](/Users/rajesh.yemul/Practice%20Project/pw-ui-api-framework/src/helper/actions/CheckboxActions.ts)
 - [src/helper/waits/WaitUtils.ts](/Users/rajesh.yemul/Practice%20Project/pw-ui-api-framework/src/helper/waits/WaitUtils.ts)
 - [src/helper/asserts/AssertUtils.ts](/Users/rajesh.yemul/Practice%20Project/pw-ui-api-framework/src/helper/asserts/AssertUtils.ts)
 - [src/helper/asserts/ExpectUtils.ts](/Users/rajesh.yemul/Practice%20Project/pw-ui-api-framework/src/helper/asserts/ExpectUtils.ts)
@@ -650,7 +653,9 @@ Without this layer:
 
 Inside page objects, the framework now prefers this split:
 
-- use `this.uiActions`, `this.uiElementActions`, `this.editBoxActions`, and other action helpers for mechanics
+- use `this.pageActions` for browser/session mechanics like navigation and tab switching
+- use `this.ui.element` for general element interactions like click, hover, text, and count
+- use `this.ui.editBox`, `this.ui.dropdown`, and `this.ui.checkbox` for control-specific interactions
 - use `this.waitUtils` for wait orchestration
 - use `this.expectUtils` for locator/page assertions
 - use `this.assertUtils` for plain values like counts, booleans, equality, and collections
@@ -665,7 +670,7 @@ This is the pattern the framework wants readers to copy when they build new page
 async verifyRoomCardsArePopulated(): Promise<void> {
   await StepRunner.run('Home Page - verify room cards are populated', async () => {
     await this.focusRoomCatalog();
-    const roomCount = await this.uiElementActions.count(this.roomTitles);
+    const roomCount = await this.ui.element.count(this.roomTitles);
 
     await this.assertUtils.assertGreaterThanOrEqual(
       roomCount,
@@ -674,7 +679,7 @@ async verifyRoomCardsArePopulated(): Promise<void> {
     );
 
     for (let index = 0; index < Math.min(roomCount, 3); index++) {
-      const title = await this.uiElementActions.text(this.roomTitles.nth(index));
+      const title = await this.ui.element.text(this.roomTitles.nth(index));
 
       await this.assertUtils.assertGreaterThan(
         title.length,
@@ -724,19 +729,23 @@ It centralizes things like:
 
 This is useful because the rest of the UI layer does not need to manage page state directly.
 
-### `UIActions` vs `UIElementActions`
+### Action Helper Split
 
-Both helpers are useful, but they are meant for slightly different jobs.
+The framework keeps helper ownership narrow so responsibilities stay obvious.
 
-- `UIActions` is the lighter wrapper for straightforward page-level interactions
-- `UIElementActions` is the richer wrapper for locator-based interactions, retries, text extraction, counts, and advanced element work
+- `PageActions` owns page and browser-context behavior such as navigation, reload, history, and window handling
+- `UIElementActions` owns general element interactions such as `click(...)`, `text(...)`, `count(...)`, `hover(...)`, and visibility checks
+- `EditBoxActions`, `DropDownActions`, and `CheckboxActions` own control-specific interactions
+
+`UIActions` is now a thin facade over those stateless helpers. It gives page objects one stable entry point without re-implementing any interaction logic or storing mutable locator state.
 
 Examples of the clearer names now preferred in the framework:
 
-- `this.uiElementActions.click(...)`
-- `this.uiElementActions.count(...)`
-- `this.uiElementActions.text(...)`
-- `this.uiActions.isElementVisible(...)`
+- `this.pageActions.gotoURL(...)`
+- `this.ui.element.click(...)`
+- `this.ui.element.count(...)`
+- `this.ui.editBox.fill(...)`
+- `this.ui.dropdown.selectByValue(...)`
 
 ### Wait Naming Rule
 
