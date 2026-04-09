@@ -8,7 +8,9 @@ import { SetupConstants } from './src/support/constants/SetupConstants';
 
 dotenv.config();
 
-const timestamp = new Date().toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
+const timestamp = process.env.TEST_TIMESTAMP || new Date().toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
+process.env.TEST_TIMESTAMP = timestamp;
+
 const REPORT_ROOT = process.env.REPORT_ROOT || path.join(process.cwd(), 'reports', timestamp);
 const isCI = ConfigManager.isCI();
 const selectedBrowser = ConfigManager.getBrowser();
@@ -178,9 +180,9 @@ export default defineConfig({
     headless: ConfigManager.isHeadless(),
     viewport: { width: 1440, height: 900 },
     ignoreHTTPSErrors: true,
+    trace: 'on',
     screenshot: SetupConstants.ONLY_ON_FAILURE,
     video: SetupConstants.RETAIN_ON_FAILURE,
-    trace: SetupConstants.RETAIN_ON_FAILURE,
   },
   projects: [
     {
@@ -188,6 +190,7 @@ export default defineConfig({
       use: {
         ...browserDeviceMap[selectedBrowser],
         browserName: selectedBrowser,
+        trace: 'on',
       },
     },
   ],
